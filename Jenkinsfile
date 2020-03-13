@@ -2,10 +2,19 @@ pipeline {
 	agent {
 		label "maven"
 	}
+	options{
+		skipDefaultCheckout()
+		disableConcurrentBuilds()
+	}
 	stages { 
-		stage('Checkout') {
+		stage('Checkout'){
+			steps{
+				checkout(scm)
+			}
+		}
+		stage('Compile') {
 			steps {
-				sg "mvn package -DskupTests"
+				sh "mvn package -DskupTests"
 			}
 		}
 		stage('Test') {
@@ -18,7 +27,9 @@ pipeline {
 				script{
 					openshift.withCluster{
 						openshift.withProject{
-							openshift.selector("bc", "hello-openshift").startBuild("--wait=true")
+							// paso va a buscar el buildconfig crado previamente con comando oc new-app 
+							//											//  build de la imagen
+							openshift.selector("bc", "hello-openshift").startBuild("--from-dir=./target", "--wait=true")
 						}
 					}
 				}
