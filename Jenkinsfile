@@ -44,7 +44,6 @@ pipeline {
 
 							openshift.set("triggers","dc/hello-openshift","--remove-all")
 							openshift.set("triggers","dc/hello-openshift","--from-image=hello-openshift:latest","-c hello-openshift")
-							openshift.selector("dc","hello-openshift").rollout().start()
 							openshift.selector("dc","hello-openshift").rollout().status()
 
 
