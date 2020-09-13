@@ -64,12 +64,14 @@ pipeline {
 			}
 		}
 		stage("Deploy Stage"){
-			script{
-				openshift.withCluster{
-					openshift.withProject("hello-openshift-stage"){
-						openshift.set("trigggers","dc/hello-openshift","--remove-all")
-						openshift.set("trigggers","dc/hello-openshift","--form-image=hello-openshift:${TAG}","-c hello-openshift")
-						openshift.selector("dc","hello-openshift").rollout().status()
+			steps {
+				script{
+					openshift.withCluster{
+						openshift.withProject("hello-openshift-stage"){
+							openshift.set("trigggers","dc/hello-openshift","--remove-all")
+							openshift.set("trigggers","dc/hello-openshift","--form-image=hello-openshift:${TAG}","-c hello-openshift")
+							openshift.selector("dc","hello-openshift").rollout().status()
+						}
 					}
 				}
 			}
